@@ -1,10 +1,15 @@
-function App() {
-  return (
-    <>
-      <h1>Sistema de Contabilidad</h1>
-      <p>Hola Mundo</p>
-    </>
-  )
-}
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from '@/context/AuthContext';
+import AppRouter from '@/router/AppRouter';
 
-export default App
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+};
+
+export default App;
