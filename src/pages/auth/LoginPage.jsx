@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import AuthLayout from '@/components/layouts/AuthLayout';
 import AppLogo from '@/components/common/AppLogo';
 import InputField from '@/components/ui/InputField';
 import Button from '@/components/ui/Button';
-import Alert from '@/components/ui/Alert';
 import useLoginForm from '@/hooks/useLoginForm';
 import { useAuth } from '@/context/AuthContext';
 
@@ -16,17 +15,20 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login, loading } = useAuth();
   const { values, errors, showPassword, handleChange, togglePassword, validate } = useLoginForm();
-  const [submitError, setSubmitError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    setSubmitError('');
     try {
       await login(values.email, values.password, DEFAULT_TENANT);
       navigate('/dashboard');
     } catch (err) {
-      setSubmitError(err.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: err.message,
+        confirmButtonColor: 'var(--color-primary)',
+      });
     }
   };
 
@@ -45,9 +47,6 @@ const LoginPage = () => {
 
         <div className="relative z-10">
           <AppLogo subtitle="Sign In" />
-
-          {/* Error global */}
-          {submitError && <div className="mb-5"><Alert type="error" message={submitError} /></div>}
 
           {/* Form */}
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
